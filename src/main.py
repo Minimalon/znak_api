@@ -13,4 +13,4 @@ app.include_router(auth_router)
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app, host='progress.local', port=8180)
+    uvicorn.run(app, host='10.8.16.18', port=8180)
