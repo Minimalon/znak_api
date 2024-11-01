@@ -71,7 +71,7 @@ class Znak:
         """
         headers = {'Content-Type': 'application/json', "accept": "application/json"}
         data = {'uuid': uuid, "data": signing} if inn is None else {'uuid': uuid, "data": signing, 'inn': inn}
-        url = f'{znak_config.true_api_v3()}/auth/simpleSignIn'
+        url = f'{await znak_config.true_api_v3()}/auth/simpleSignIn'
         response = await self._post(url, headers=headers, data=data)
         return await response.json()
 
@@ -85,7 +85,7 @@ class Znak:
     async def get_uuid_and_data(self) -> dict:
         """Начало авторизации. Получение uuid и data"""
         headers = {"accept": "application/json"}
-        url = f'{znak_config.true_api_v3()}/auth/key'
+        url = f'{await znak_config.true_api_v3()}/auth/key'
         response = await self._get(url, headers=headers)
         return await response.json()
 

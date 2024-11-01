@@ -1,6 +1,4 @@
 from fastapi import APIRouter, Depends
-import sys
-from pathlib import Path
 
 from src.znak import Znak
 
