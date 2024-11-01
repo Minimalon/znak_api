@@ -10,5 +10,5 @@ worker_class = 'uvicorn.workers.UvicornWorker'
 # Logging Options
 loglevel = 'debug'
 logs_dir = dir_path / 'logs'
-accesslog = logs_dir / 'access_log.log'
-errorlog = logs_dir / 'errorlog.log'
+accesslog = str(logs_dir / 'access_log')
+errorlog = str(logs_dir / 'errorlog')
