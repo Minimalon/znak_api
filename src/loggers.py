@@ -24,10 +24,12 @@ znak_path = main_log_dir / 'znak.log'
 
 # region Создание лог файлов
 async def create_loggers():
-    logger.add(znak_path, format=MAIN_FORMAT, filter=make_filters('znak'))
+    logger.add(znak_path, format=MAIN_FORMAT, filter=make_filters('znak'), enqueue=True)
 
 # endregion
 
 # region Переменные для логирования
 znak_log = logger.bind(filter='znak')
+
+
 # endregion
