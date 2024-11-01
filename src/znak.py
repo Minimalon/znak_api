@@ -80,6 +80,7 @@ class Znak:
         login_data = await self.get_uuid_and_data()
         signing = await self.cryproPro.signing_data(b64encode(login_data['data'].encode()).decode())
         sign_data = await self.simple_signin(login_data['uuid'], signing, self.inn_to_auth)
+        znak_log.info(sign_data)
         return sign_data['token']
 
     async def get_uuid_and_data(self) -> dict:
