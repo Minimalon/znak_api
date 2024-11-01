@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import Union
 import subprocess
 
-from .config import certificate_config
+from src.config import certificate_config
 
 sys.path.append('/opt/pycades_0.1.44290/')
 

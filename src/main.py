@@ -1,10 +1,5 @@
 from fastapi import FastAPI
-from auth.router import router as auth_router
-import sys
-from pathlib import Path
-
-
-sys.path.append(Path(__file__).parent)
+from src.auth.router import router as auth_router
 
 app = FastAPI()
 

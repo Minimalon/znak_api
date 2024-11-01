@@ -1,5 +1,5 @@
 from pathlib import Path
-from .config import dir_path
+from src.config import dir_path
 from loguru import logger
 
 MAIN_FORMAT = "{time} | {level} | {message} | {extra}"
