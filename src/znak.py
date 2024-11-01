@@ -1,3 +1,5 @@
+import json
+
 from aiohttp import ClientResponse, ClientSession
 
 from src.config import znak_config
@@ -72,7 +74,7 @@ class Znak:
         headers = {'Content-Type': 'application/json', "accept": "application/json"}
         data = {'uuid': uuid, "data": signing} if inn is None else {'uuid': uuid, "data": signing, 'inn': inn}
         url = f'{await znak_config.true_api_v3()}/auth/simpleSignIn'
-        response = await self._post(url, headers=headers, data=data)
+        response = await self._post(url, headers=headers, data=json.dumps(data))
         return await response.json()
 
     async def create_token(self) -> str:
