@@ -1,5 +1,5 @@
 from multiprocessing import cpu_count
-from config import dir_path
+from src.config import dir_path
 
 bind = "10.8.16.18:8180"
 
