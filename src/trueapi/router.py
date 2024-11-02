@@ -1,4 +1,5 @@
 from base64 import b64encode
+from typing import Optional
 
 from fastapi import APIRouter, Depends
 
@@ -15,15 +16,15 @@ router = APIRouter(
 async def doc_list(
         token: str,
         pg: str,
-        dateFrom: str = None,
-        dateTo: str = None,
-        documentFormat: str = None,
+        dateFrom: Optional[str] = None,
+        dateTo: Optional[str] = None,
+        documentFormat: Optional[str] = None,
         limit: int = 1000,
-        number: str = None,
+        number: Optional[str] = None,
         order: str = "DESC",
         pageDir: str = "NEXT",
-        senderInn: str = None,
-        receiverInn: str = None,
+        senderInn: Optional[str] = None,
+        receiverInn: Optional[str] = None,
 
 ) -> dict:
     znak = Znak(token=token)
