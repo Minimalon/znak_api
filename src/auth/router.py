@@ -8,7 +8,7 @@ router = APIRouter(
 )
 
 
-@router.post('/token', tags="Получение токена")
+@router.post('/token', name='Получение токена')
 async def auth(inn: str) -> str:
     znak = Znak(inn)
     return await znak.create_token()
