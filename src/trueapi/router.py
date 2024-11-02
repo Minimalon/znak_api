@@ -1,9 +1,9 @@
 from base64 import b64encode
-from typing import Optional
+from typing import Optional, Dict, Any
 
 from fastapi import APIRouter, Depends
 
-from src.trueapi.dependencies import correct_paramds
+from src.trueapi.dependencies import get_filtered_params
 from src.znak import Znak
 
 router = APIRouter(
@@ -14,33 +14,11 @@ router = APIRouter(
 
 @router.post('/doc/list', name='Список всех документов',
              description='Метод получения списка загруженных документов в ГИС МТ',
-             dependencies=[correct_paramds])
+             )
 async def doc_list(
         token: str,
-        pg: str,
-        dateFrom: Optional[str] = None,
-        dateTo: Optional[str] = None,
-        documentFormat: Optional[str] = None,
-        limit: int = 1000,
-        number: Optional[str] = None,
-        order: str = "DESC",
-        pageDir: str = "NEXT",
-        senderInn: Optional[str] = None,
-        receiverInn: Optional[str] = None,
-
+        params: Dict[str, Any] = Depends(get_filtered_params)
 ) -> dict:
     znak = Znak(token=token)
-    docs = await znak.get_doc_list({
-        "pg": pg,
-        "dateFrom": dateFrom,
-        "dateTo": dateTo,
-        "documentFormat": documentFormat,
-        "limit": limit,
-        "number": number,
-        "order": order,
-        "pageDir": pageDir,
-        "senderInn": senderInn,
-        "receiverInn": receiverInn
-    })
-
+    docs = await znak.get_doc_list(params)
     return await docs.json()
