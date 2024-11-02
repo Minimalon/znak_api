@@ -36,7 +36,7 @@ class CryproPro:
     def certificate_info(self, cert=None):
         """Данные сертификата."""
         if cert is None and self.thumbprint is not None:
-            cert = self.get_certificate(self.thumbprint)
+            cert = self.get_certificate()
         pkey = cert.PrivateKey
         algo = cert.PublicKey().Algorithm
 
@@ -62,56 +62,64 @@ class CryproPro:
         }
         return cert_info
 
-    def get_certificate(self, thumbprint):
-        cert = None
+    def get_certificate(self):
         store = pycades.Store()
         store.Open(
-            pycades.CADESCOM_CONTAINER_STORE,
+            pycades.CAPICOM_CURRENT_USER_STORE,
             pycades.CAPICOM_MY_STORE,
             pycades.CAPICOM_STORE_OPEN_MAXIMUM_ALLOWED
         )
         try:
-            certificates = store.Certificates.Find(pycades.CAPICOM_CERTIFICATE_FIND_SHA1_HASH, thumbprint)
-            count = certificates.Count
-            if count == 0:
+            certificates = store.Certificates.Find(
+                pycades.CAPICOM_CERTIFICATE_FIND_SHA1_HASH,
+                self.thumbprint
+            )
+            if certificates.Count == 0:
                 raise ValueError("Сертификат с указанным отпечатком не найден.")
-            for cert_num in range(count):
-                cert = certificates.Item(cert_num + 1)
-                cert_info = self.certificate_info(cert)
-                valid_to = datetime.strptime(cert_info['valid']['to'], "%d.%m.%Y %H:%M:%S")
-                if datetime.now() > valid_to:
-                    continue
-                if not cert.HasPrivateKey():
-                    continue
-                # Возвращаем первый найденный подходящий сертификат
-                return cert
-            raise ValueError("Не найден действующий сертификат с закрытым ключом.")
-        except Exception as e:
-            raise e
+            cert = certificates.Item(1)
+            if not cert.HasPrivateKey():
+                raise ValueError("Сертификат не содержит закрытого ключа.")
+            return cert
         finally:
             store.Close()
 
     def get_signer(self):
-        try:
-            signer = pycades.Signer()
-            signer.Certificate = self.get_certificate(self.thumbprint)
-            signer.CheckCertificate = True
-            signer.KeyPin = self.pin  # Убедитесь, что PIN-код задан корректно
-            return signer
-        except Exception as e:
-            print(f"Ошибка при получении подписанта: {e}")
-            raise
+        cert = self.get_certificate()
+        signer = pycades.Signer()
+        signer.Certificate = cert
+        signer.CheckCertificate = True
+        signer.KeyPin = self.pin
+        return signer
 
-    async def signing_data(self, data):
-        """
-        Подпись текста (Для получения токена)
-        detached - Истина/Ложь - откреплённая(для подписания документов)/прикреплённая(для получения токена авторизации) подпись
-        """
+    def sign_data(self, data):
         signed_data = pycades.SignedData()
-        signed_data.ContentEncoding = pycades.CADESCOM_BASE64_TO_BINARY
         signed_data.Content = data
-        signature = signed_data.SignCades(self.signer, pycades.CADESCOM_CADES_BES)
+        signature = signed_data.SignCades(
+            self.signer,
+            pycades.CADESCOM_CADES_BES
+        )
         return signature
+    # def get_signer(self):
+    #     try:
+    #         signer = pycades.Signer()
+    #         signer.Certificate = self.get_certificate()
+    #         signer.CheckCertificate = True
+    #         signer.KeyPin = self.pin  # Убедитесь, что PIN-код задан корректно
+    #         return signer
+    #     except Exception as e:
+    #         print(f"Ошибка при получении подписанта: {e}")
+    #         raise
+    #
+    # async def signing_data(self, data):
+    #     """
+    #     Подпись текста (Для получения токена)
+    #     detached - Истина/Ложь - откреплённая(для подписания документов)/прикреплённая(для получения токена авторизации) подпись
+    #     """
+    #     signed_data = pycades.SignedData()
+    #     signed_data.ContentEncoding = pycades.CADESCOM_BASE64_TO_BINARY
+    #     signed_data.Content = data
+    #     signature = signed_data.SignCades(self.signer, pycades.CADESCOM_CADES_BES)
+    #     return signature
 
     def signing_data_with_user(self, data):
         """
@@ -119,7 +127,7 @@ class CryproPro:
         detached - Истина/Ложь - откреплённая(для подписания документов)/прикреплённая(для получения токена авторизации) подпись
         """
         signer = pycades.Signer()
-        signer.Certificate = self.get_certificate(self.thumbprint)
+        signer.Certificate = self.get_certificate()
         signer.CheckCertificate = True
         signer.KeyPin = self.pin
         signer.Options = pycades.CAPICOM_CERTIFICATE_INCLUDE_CHAIN_EXCEPT_ROOT
