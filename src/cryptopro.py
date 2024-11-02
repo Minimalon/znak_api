@@ -90,7 +90,7 @@ class CryproPro:
         signer = pycades.Signer()
         signer.Certificate = self.get_certificate(self.thumbprint)
         signer.CheckCertificate = True
-        signer.KeyPin = self.pin
+        # signer.KeyPin = self.pin
         return signer
 
     async def signing_data(self, data):
