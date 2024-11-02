@@ -42,7 +42,7 @@ class Znak:
                 await self.log_request('GET', str(resp.url), headers=headers, data=data)
                 await self.log_response(resp)
                 if not resp.ok:
-                    raise HTTPException(status_code=resp.status, detail=await resp.text())
+                    raise HTTPException(status_code=resp.status, detail=await resp.json())
                 return resp
 
     async def _post(self, url: str, params: dict = None, headers: dict = None, data: str = None) -> ClientResponse:
@@ -54,7 +54,7 @@ class Znak:
                 await self.log_request('POST', str(resp.url), headers=headers, data=data)
                 await self.log_response(resp)
                 if not resp.ok:
-                    raise HTTPException(status_code=resp.status, detail=await resp.text())
+                    raise HTTPException(status_code=resp.status, detail=await resp.json())
                 return resp
 
     async def _put(self, url: str, params: dict = None, headers: dict = None, data: str = None) -> ClientResponse:
@@ -66,7 +66,7 @@ class Znak:
                 await self.log_request('PUT', str(resp.url), headers=headers, data=data)
                 await self.log_response(resp)
                 if not resp.ok:
-                    raise HTTPException(status_code=resp.status, detail=await resp.text())
+                    raise HTTPException(status_code=resp.status, detail=await resp.json())
                 return resp
 
     # region Login
