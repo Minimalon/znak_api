@@ -93,3 +93,12 @@ class Znak:
         return await response.json()
 
     # endregion
+
+    async def get_doc_list(self, args) -> ClientResponse:
+        """
+        Список всех документов (Метод получения списка загруженных документов в ГИС МТ)
+        :param args: urlencode. Обязательный памераметр pg
+        :return: Список документов
+        """
+        return self._get(f'{await znak_config.true_api_v4()}/doc/list', args, self.token)
+
