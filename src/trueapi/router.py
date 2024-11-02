@@ -3,6 +3,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends
 
+from src.trueapi.dependencies import correct_paramds
 from src.znak import Znak
 
 router = APIRouter(
@@ -12,7 +13,8 @@ router = APIRouter(
 
 
 @router.post('/doc/list', name='Список всех документов',
-             description='Метод получения списка загруженных документов в ГИС МТ')
+             description='Метод получения списка загруженных документов в ГИС МТ',
+             dependencies=[correct_paramds])
 async def doc_list(
         token: str,
         pg: str,
