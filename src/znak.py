@@ -107,5 +107,5 @@ class Znak:
         :param args: urlencode. Обязательный памераметр pg
         :return: Список документов
         """
-        return self._get(f'{await znak_config.true_api_v4()}/doc/list', args, self.token)
+        return await self._get(f'{await znak_config.true_api_v4()}/doc/list', args, self.token)
 
