@@ -92,11 +92,15 @@ class CryproPro:
             store.Close()
 
     def get_signer(self):
-        signer = pycades.Signer()
-        signer.Certificate = self.get_certificate(self.thumbprint)
-        signer.CheckCertificate = True
-        # signer.KeyPin = self.pin
-        return signer
+        try:
+            signer = pycades.Signer()
+            signer.Certificate = self.get_certificate(self.thumbprint)
+            signer.CheckCertificate = True
+            signer.KeyPin = self.pin  # Убедитесь, что PIN-код задан корректно
+            return signer
+        except Exception as e:
+            print(f"Ошибка при получении подписанта: {e}")
+            raise
 
     async def signing_data(self, data):
         """
