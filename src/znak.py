@@ -1,4 +1,5 @@
 import json
+from fastapi.exceptions import HTTPException
 
 from aiohttp import ClientResponse, ClientSession
 
@@ -40,6 +41,8 @@ class Znak:
             async with session.get(url, params=params, headers=headers) as resp:
                 await self.log_request('GET', str(resp.url), headers=headers, data=data)
                 await self.log_response(resp)
+                if not resp.ok:
+                    raise HTTPException(status_code=resp.status, detail=await resp.text())
                 return resp
 
     async def _post(self, url: str, params: dict = None, headers: dict = None, data: str = None) -> ClientResponse:
@@ -50,6 +53,8 @@ class Znak:
             async with session.post(url, params=params, headers=headers, data=data) as resp:
                 await self.log_request('POST', str(resp.url), headers=headers, data=data)
                 await self.log_response(resp)
+                if not resp.ok:
+                    raise HTTPException(status_code=resp.status, detail=await resp.text())
                 return resp
 
     async def _put(self, url: str, params: dict = None, headers: dict = None, data: str = None) -> ClientResponse:
@@ -60,6 +65,8 @@ class Znak:
             async with session.put(url, params=params, headers=headers, data=data) as resp:
                 await self.log_request('PUT', str(resp.url), headers=headers, data=data)
                 await self.log_response(resp)
+                if not resp.ok:
+                    raise HTTPException(status_code=resp.status, detail=await resp.text())
                 return resp
 
     # region Login
