@@ -65,26 +65,31 @@ class CryproPro:
     def get_certificate(self, thumbprint):
         cert = None
         store = pycades.Store()
-        store.Open(pycades.CADESCOM_CONTAINER_STORE, pycades.CAPICOM_MY_STORE,
-                   pycades.CAPICOM_STORE_OPEN_MAXIMUM_ALLOWED)
+        store.Open(
+            pycades.CADESCOM_CONTAINER_STORE,
+            pycades.CAPICOM_MY_STORE,
+            pycades.CAPICOM_STORE_OPEN_MAXIMUM_ALLOWED
+        )
         try:
-            certificates = store.Certificates.Find(0, thumbprint)
-            count = 0
-            for cert_num in range(certificates.Count):
+            certificates = store.Certificates.Find(pycades.CAPICOM_CERTIFICATE_FIND_SHA1_HASH, thumbprint)
+            count = certificates.Count
+            if count == 0:
+                raise ValueError("Сертификат с указанным отпечатком не найден.")
+            for cert_num in range(count):
                 cert = certificates.Item(cert_num + 1)
                 cert_info = self.certificate_info(cert)
-                if datetime.now() > datetime.strptime(cert_info['valid']['to'], "%d.%m.%Y %H:%M:%S"):
+                valid_to = datetime.strptime(cert_info['valid']['to'], "%d.%m.%Y %H:%M:%S")
+                if datetime.now() > valid_to:
                     continue
-                count += 1
-            if count == 0:
-                raise ValueError("Не найден сертификат действующий сертификат")
+                if not cert.HasPrivateKey():
+                    continue
+                # Возвращаем первый найденный подходящий сертификат
+                return cert
+            raise ValueError("Не найден действующий сертификат с закрытым ключом.")
         except Exception as e:
-            if "Cannot find object or property" in str(e):
-                raise ValueError("Не нашлось сертификата по вашему отпечатку")
-            else:
-                raise e
-
-        return cert
+            raise e
+        finally:
+            store.Close()
 
     def get_signer(self):
         signer = pycades.Signer()
