@@ -91,7 +91,7 @@ class CryproPro:
         signer.KeyPin = self.pin
         return signer
 
-    def sign_data(self, data):
+    async def sign_data(self, data):
         signed_data = pycades.SignedData()
         signed_data.Content = data
         signature = signed_data.SignCades(
