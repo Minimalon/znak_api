@@ -38,7 +38,7 @@ def doc_list(
     return filtered_params
 
 
-async def doc_info(
+async def depen_doc_info(
         docId: str,
         body: bool = Query(
             False,
@@ -58,8 +58,8 @@ async def doc_info(
 ) -> Dict[str, Any]:
     params = {
         "docId": docId,
-        "body": body,
-        "content": content,
+        "body": int(body),
+        "content": int(content),
         "pg": pg,
         "limit": limit,
         "pageNumber": pageNumber

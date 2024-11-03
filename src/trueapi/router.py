@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any
 
 from fastapi import APIRouter, Depends
 from fastapi.exceptions import HTTPException
-from src.trueapi.dependencies import doc_list, doc_info
+from src.trueapi.dependencies import doc_list, depen_doc_info
 from src.znak import Znak
 
 router = APIRouter(
@@ -32,7 +32,7 @@ async def doc_list(
             )
 async def doc_info(
         token: str,
-        params: Dict[str, Any] = Depends(doc_info)
+        params: Dict[str, Any] = Depends(depen_doc_info)
 ) -> list[dict]:
     znak = Znak(token=token)
     doc = await znak.get_doc_info(**params)
