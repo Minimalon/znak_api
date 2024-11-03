@@ -17,6 +17,6 @@ async def auth(
 ) -> str:
     znak = Znak(params['inn'])
     login_data = await znak.get_uuid_and_data()
-    signing = await znak.cryproPro.signing_data(b64encode(login_data['data'].encode()).decode())
+    signing = await znak.cryproPro.sign_data(b64encode(login_data['data'].encode()).decode())
     sign_data = await znak.simple_signin(login_data['uuid'], signing, inn=params['inn'])
     return sign_data['token']
