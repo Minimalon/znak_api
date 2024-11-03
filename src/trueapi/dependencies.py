@@ -1,11 +1,16 @@
 from typing import Any, Dict
 
-from fastapi import Depends
-from fastapi.params import Query
+from fastapi.params import Query, Depends
+
+
+def default_pg(
+        pg: str = Query(None, description='Товарная группа', example='beer'),
+) -> Dict[str, Any]:
+    return {'pg': pg}
 
 
 def doc_list(
-        pg: str,
+        pg: str = Depends(default_pg),
         dateFrom: str = None,
         dateTo: str = None,
         documentFormat: str = None,
@@ -47,7 +52,7 @@ async def doc_info(
                         '«true» — контент документа возвращается в ответе метода;\n'
                         '«false» — контент документа не возвращается в ответе метода',
         ),
-        pg: str = Query(None, description='Товарная группа'),
+        pg: str = Depends(default_pg),
         limit: int = Query(36000, description='Количество кодовв теле документа'),
         pageNumber: int = Query(1, description='Лимит вывода информации по кодам')
 ) -> Dict[str, Any]:
