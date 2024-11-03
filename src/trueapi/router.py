@@ -33,7 +33,7 @@ async def doc_list(
 async def doc_info(
         token: str,
         params: Dict[str, Any] = Depends(doc_info)
-) -> dict:
+) -> list[dict]:
     znak = Znak(token=token)
     doc = await znak.get_doc_info(params['docId'])
     return await doc.json()
