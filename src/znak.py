@@ -101,7 +101,7 @@ class Znak:
 
     # endregion
 
-    async def get_doc_list(self, args) -> ClientResponse:
+    async def get_doc_list(self, args: dict) -> ClientResponse:
         """
         Список всех документов (Метод получения списка загруженных документов в ГИС МТ)
         :param args: urlencode. Обязательный памераметр pg
@@ -110,5 +110,11 @@ class Znak:
         return await self._get(
             url=f'{await znak_config.true_api_v4()}/doc/list',
             params=args,
+        )
+
+    async def get_doc_info(self, doc_id: str, **kwargs) -> ClientResponse:
+        return await self._get(
+            url=f'{await znak_config.true_api_v4()}/doc/{doc_id}/info',
+            params=kwargs
         )
 

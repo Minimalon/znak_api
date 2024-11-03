@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any
 
 from fastapi import APIRouter, Depends
 
-from src.trueapi.dependencies import get_filtered_params
+from src.trueapi.dependencies import doc_list, doc_info
 from src.znak import Znak
 
 router = APIRouter(
@@ -17,8 +17,20 @@ router = APIRouter(
              )
 async def doc_list(
         token: str,
-        params: Dict[str, Any] = Depends(get_filtered_params)
+        params: Dict[str, Any] = Depends(doc_list)
 ) -> dict:
     znak = Znak(token=token)
     docs = await znak.get_doc_list(params)
     return await docs.json()
+
+@router.get('/doc/{docId}/info', name='Информация о документе',
+            description='Метод получения содержимого документа по идентификатору',
+            )
+async def doc_info(
+        token: str,
+        params: Dict[str, Any] = Depends(doc_info)
+) -> dict:
+    znak = Znak(token=token)
+    doc = await znak.get_doc_info(params['docId'])
+    return await doc.json()
+
