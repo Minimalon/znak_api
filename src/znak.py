@@ -39,7 +39,6 @@ class Znak:
                 "Authorization": f"Bearer {self.token}", **headers}
         async with ClientSession() as session:
             async with session.get(url, params=params, headers=headers) as resp:
-                znak_log.debug(params)
                 await self.log_request('GET', str(resp.url), headers=headers, data=data)
                 await self.log_response(resp)
                 if not resp.ok:
@@ -113,9 +112,9 @@ class Znak:
             params=args,
         )
 
-    async def get_doc_info(self, doc_id: str, **kwargs) -> ClientResponse:
+    async def get_doc_info(self, docId: str, **kwargs) -> ClientResponse:
         return await self._get(
-            url=f'{await znak_config.true_api_v4()}/doc/{doc_id}/info',
+            url=f'{await znak_config.true_api_v4()}/doc/{docId}/info',
             params=kwargs
         )
 
