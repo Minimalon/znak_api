@@ -6,7 +6,7 @@ from fastapi.params import Query, Depends
 def default_pg(
         pg: str = Query(None, description='Товарная группа', example='beer'),
 ) -> Dict[str, Any]:
-    return {'pg': pg}
+    return pg
 
 
 def doc_list(
