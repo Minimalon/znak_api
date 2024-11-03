@@ -39,6 +39,7 @@ class Znak:
                 "Authorization": f"Bearer {self.token}", **headers}
         async with ClientSession() as session:
             async with session.get(url, params=params, headers=headers) as resp:
+                znak_log.debug(params)
                 await self.log_request('GET', str(resp.url), headers=headers, data=data)
                 await self.log_response(resp)
                 if not resp.ok:
